@@ -8,15 +8,16 @@
           [id]="'custom-checkbox-selectDeselectAll'"
           [name]="'custom-checkbox-selectDeselectAll'"
           [value]="'custom-checkbox-selectDeselectAll'"
-          [checked]="selectDeselectAllIsChecked"
+          [checked]="selectDeselectAllIsChecked()"
           (change)="handleSelectDeselectAll($event)"
         />
       </th>
       <th class="numChecked">
-        <span *ngIf="numCheckboxesSelected"
-          >Выбрано {{ numCheckboxesSelected }}</span
-        >
-        <span *ngIf="!numCheckboxesSelected">Нет</span>
+        @if (numCheckboxesSelected()) {
+        <span>Выбрано {{ numCheckboxesSelected() }}</span>
+        } @else {
+        <span>Нет</span>
+        }
       </th>
     </tr>
     <tr>
@@ -27,18 +28,19 @@
     </tr>
   </thead>
   <tbody>
-    <ng-container *ngFor="let issue of issues; index as index">
-      <tr class="getStylesTr(issue)" [ngStyle]="checkedState[index]">
+    @for (issue of issues; track $index) {
+    <ng-container>
+      <tr [class]="getStylesTr(issue)" [ngStyle]="checkedState()[$index]">
         <td>
           <input
             *ngIf="issue.status === 'open'"
             class="checkbox"
             [type]="'checkbox'"
-            [id]="'custom-checkbox-' + index"
+            [id]="'custom-checkbox-' + $index"
             [name]="issue.name"
             [value]="issue.name"
-            [checked]="checkedState[index].checked"
-            (change)="handleOnChange(index)"
+            [checked]="checkedState()[$index].checked"
+            (change)="handleOnChange($index)"
           />
           <input
             *ngIf="issue.status !== 'open'"
@@ -55,5 +57,6 @@
         </td>
       </tr>
     </ng-container>
+    }
   </tbody>
 </table>
